@@ -14,7 +14,7 @@ class AccountController extends Controller
     public function index()
     {
         $accounts = Account::with('thumbnail')->paginate(40);
-        
+
         return Inertia::render('accounts/Index', [
             'accounts' => $accounts,
         ]);
@@ -41,7 +41,11 @@ class AccountController extends Controller
      */
     public function show(Account $account)
     {
-        //
+        $account->load('profile');
+        
+        return Inertia::render('accounts/Show', [
+            'account' => $account,
+        ]);
     }
 
     /**

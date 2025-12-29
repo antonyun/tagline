@@ -2,6 +2,7 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { index as accountsIndex } from '@/routes/accounts';
+import { show as accountsShow } from '@/routes/accounts';
 import { type BreadcrumbItem } from '@/types';
 import { ref, onMounted, reactive, computed } from 'vue'
 import { useForm, usePage } from '@inertiajs/vue3'
@@ -83,31 +84,32 @@ function onError(accountId: number, fallbackSrc: string) {
 </script>
 
 <template>
-    <Head title="Account" />
+    <Head title="Accounts" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-        <h1>Media</h1>
+        <h1>Accounts</h1>
 
         <div class="flex flex-wrap justify-start gap-3">
-            <div
-            v-for="account in props.accounts.data"
-            :key="account.id"
-            class="relative overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border cursor-pointer">
-            <template v-if="mediaSrcs[account.id]">
-                <img
-                :src="mediaSrcs[account.id]"
-                :alt="account.thumbnail?.filename || 'Image'"
-                class="h-46 w-auto object-cover rounded-xl"
-                @error="onError(account.id, account.thumbnail?.relative_path ?? '')"
-                />
-            </template>
-            <template v-else>
-                <div class="h-46 w-auto flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-xl aspect-3/4">
-                <PlaceholderPattern />
-                </div>
-            </template>
-            </div>
+            <Link
+                v-for="account in props.accounts.data"
+                :key="account.id"
+                :href=accountsShow(account.id).url
+                class="relative overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border cursor-pointer">
+                <template v-if="mediaSrcs[account.id]">
+                    <img
+                    :src="mediaSrcs[account.id]"
+                    :alt="account.thumbnail?.filename || 'Image'"
+                    class="h-46 w-auto object-cover rounded-xl"
+                    @error="onError(account.id, account.thumbnail?.relative_path ?? '')"
+                    />
+                </template>
+                <template v-else>
+                    <div class="h-46 w-auto flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-xl aspect-3/4">
+                    <PlaceholderPattern />
+                    </div>
+                </template>
+            </Link>
         </div>
 
 
