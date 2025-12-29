@@ -20,7 +20,7 @@ class Account extends Model
 
     public function thumbnail()
     {
-        return $this->belongsTo(Media::class, 'file_id');
+        return $this->belongsTo(Media::class, 'media_id');
     }
 
     public function media()

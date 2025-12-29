@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class AccountController extends Controller
 {
@@ -12,7 +13,11 @@ class AccountController extends Controller
      */
     public function index()
     {
-        //
+        $accounts = Account::with('thumbnail')->paginate(40);
+        
+        return Inertia::render('accounts/Index', [
+            'accounts' => $accounts,
+        ]);
     }
 
     /**
