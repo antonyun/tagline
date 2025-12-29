@@ -92,12 +92,12 @@ function onError(mediaId: number, fallbackSrc: string) {
                 <img
                 :src="mediaSrcs[media.id]"
                 :alt="media.filename || 'Image'"
-                class="h-64 w-auto object-cover rounded-xl"
+                class="h-46 w-auto object-cover rounded-xl"
                 @error="onError(media.id, media.relative_path ?? '')"
                 />
             </template>
             <template v-else>
-                <div class="h-64 w-auto flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-xl aspect-3/4">
+                <div class="h-46 w-auto flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-xl aspect-3/4">
                 <PlaceholderPattern />
                 </div>
             </template>
