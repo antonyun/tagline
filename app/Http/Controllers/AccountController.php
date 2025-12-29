@@ -41,8 +41,8 @@ class AccountController extends Controller
      */
     public function show(Account $account)
     {
-        $account->load('profile');
-        
+        $account->load('profile', 'thumbnail');
+
         return Inertia::render('accounts/Show', [
             'account' => $account,
         ]);
