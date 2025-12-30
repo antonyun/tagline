@@ -101,7 +101,9 @@ function onError(mediaId: number, fallbackSrc: string) {
             </template>
             <template v-else>
                 <div class="h-46 w-auto flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-xl aspect-3/4">
-                <PlaceholderPattern />
+                    <a target="_blank" :href="media.relative_path ?? '#'">
+                        <PlaceholderPattern />
+                    </a>
                 </div>
             </template>
             </div>
