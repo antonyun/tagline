@@ -97,7 +97,7 @@ function onError(fallback: string) {
 const flags: { key: keyof Profile; label: string }[] = [
   { key: 'has_face_photo', label: 'Face Photo' },
   { key: 'has_body_photo', label: 'Body Photo' },
-  { key: 'has_dick_photo', label: 'Genital Photo' },
+  { key: 'has_dick_photo', label: 'Dick Photo' },
   { key: 'has_anus_photo', label: 'Anal Photo' },
   { key: 'has_cum_photo', label: 'Cum Photo' },
   { key: 'has_had_sex', label: 'Sex Experienced' },
