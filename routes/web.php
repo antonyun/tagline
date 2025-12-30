@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AccountMediaController;
 use App\Http\Controllers\MediaController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -24,6 +25,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
     })->name('dashboard'); */
 
+    Route::get('/accounts/{account}/media', [AccountMediaController::class, 'index'])->name('accounts.media.index');
     Route::resource('accounts', AccountController::class);
     Route::resource('media', MediaController::class);
     

@@ -105,13 +105,13 @@ const flags: { key: keyof Profile; label: string }[] = [
 
 // Media category navigation
 const mediaCategories = [
-  { key: 'all', label: 'All Media', route: (id : number) => '' },
-  { key: 'face', label: 'Face Photos', route: (id : number) => '' },
-  { key: 'body', label: 'Body Photos', route: (id : number) => '' },
-  { key: 'dick', label: 'Dick / NSFW', route: (id : number) => '' },
-  { key: 'asshole', label: 'Ass / NSFW', route: (id : number) => '' },
-  { key: 'cum', label: 'Cum / NSFW', route: (id : number) => '' },
-  { key: 'other', label: 'Other', route: (id : number) => '' },
+  { key: 'all', label: 'All Media', route: (id : number) => `/accounts/${id}/media` },
+  { key: 'face', label: 'Face Photos', route: (id : number) => `/accounts/${id}/media?category_id=1` },
+  { key: 'body', label: 'Body Photos', route: (id : number) => `/accounts/${id}/media?category_id=2` },
+  { key: 'dick', label: 'Dick / NSFW', route: (id : number) => `/accounts/${id}/media?category_id=3` },
+  { key: 'asshole', label: 'Ass / NSFW', route: (id : number) => `/accounts/${id}/media?category_id=4` },
+  { key: 'cum', label: 'Cum / NSFW', route: (id : number) => `/accounts/${id}/media?category_id=5` },
+  { key: 'other', label: 'Other', route: (id : number) => `/accounts/${id}/media?category_id=6` },
 ];
 
 </script>
