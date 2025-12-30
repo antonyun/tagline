@@ -90,12 +90,14 @@ function onError(mediaId: number, fallbackSrc: string) {
             :key="media.id"
             class="relative overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border cursor-pointer">
             <template v-if="mediaSrcs[media.id]">
-                <img
-                :src="mediaSrcs[media.id]"
-                :alt="media.filename || 'Image'"
-                class="h-46 w-auto object-cover rounded-xl"
-                @error="onError(media.id, media.relative_path ?? '')"
-                />
+                <a target="_blank" :href="media.relative_path ?? '#'">
+                  <img
+                  :src="mediaSrcs[media.id]"
+                  :alt="media.filename || 'Image'"
+                  class="h-46 w-auto object-cover rounded-xl"
+                  @error="onError(media.id, media.relative_path ?? '')"
+                  />
+                </a>
             </template>
             <template v-else>
                 <div class="h-46 w-auto flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-xl aspect-3/4">
