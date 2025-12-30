@@ -3,8 +3,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { index as accountsIndex } from '@/routes/accounts';
 import { type BreadcrumbItem } from '@/types';
-import { ref, onMounted, reactive, computed } from 'vue'
-import { useForm, usePage } from '@inertiajs/vue3'
+import { ref, computed } from 'vue'
 import { Head, Link } from '@inertiajs/vue3';
 import PlaceholderPattern from '../../components/PlaceholderPattern.vue';
 
@@ -61,11 +60,9 @@ interface Account {
     profile: Profile | null;
 }
 
-interface Props {
-  account: Account;
-}
+const props = defineProps<{account: Account;}>();
 
-const props = defineProps<Props>();
+const profile = computed(() => props.account.profile);
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -82,7 +79,8 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const thumbSrc = ref<string>(
+// Image handling
+const thumbSrc = ref(
     props.account.thumbnail?.relative_thumbnail_path ??
     props.account.thumbnail?.relative_path ??
     ''
@@ -92,25 +90,29 @@ const hasImage = computed(() => thumbSrc.value !== '');
 
 function onError(fallback: string) {
     thumbSrc.value =
-        thumbSrc.value !== fallback
-            ? fallback
-            : '';
+        thumbSrc.value !== fallback ? fallback : '';
 }
 
-/* const mediaSrcs = reactive<Record<number, string>>({});
+// Boolean flags → UI chips
+const flags: { key: keyof Profile; label: string }[] = [
+  { key: 'has_face_photo', label: 'Face Photo' },
+  { key: 'has_body_photo', label: 'Body Photo' },
+  { key: 'has_dick_photo', label: 'Genital Photo' },
+  { key: 'has_anus_photo', label: 'Anal Photo' },
+  { key: 'has_cum_photo', label: 'Cum Photo' },
+  { key: 'has_had_sex', label: 'Sex Experienced' },
+];
 
-props.accounts.data.forEach(account => {
-    mediaSrcs[account.id] = account.thumbnail?.relative_thumbnail_path ?? account.thumbnail?.relative_path ?? '';
-});
-
-function onError(accountId: number, fallbackSrc: string) {
-  if (mediaSrcs[accountId] !== fallbackSrc) {
-    mediaSrcs[accountId] = fallbackSrc;
-  } else {
-    // both failed, clear to show placeholder
-    mediaSrcs[accountId] = '';
-  }
-} */
+// Media category navigation
+const mediaCategories = [
+  { key: 'all', label: 'All Media', route: (id : number) => '' },
+  { key: 'face', label: 'Face Photos', route: (id : number) => '' },
+  { key: 'body', label: 'Body Photos', route: (id : number) => '' },
+  { key: 'dick', label: 'Dick / NSFW', route: (id : number) => '' },
+  { key: 'asshole', label: 'Ass / NSFW', route: (id : number) => '' },
+  { key: 'cum', label: 'Cum / NSFW', route: (id : number) => '' },
+  { key: 'other', label: 'Other', route: (id : number) => '' },
+];
 
 </script>
 
@@ -118,117 +120,129 @@ function onError(accountId: number, fallbackSrc: string) {
     <Head title="Account" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <h1>Account #{{ props.account.id }}</h1>
+        <div class="flex flex-col gap-6 p-6">
 
-            <div class="rounded-xl border border-sidebar-border/70 dark:border-sidebar-border overflow-hidden max-w-md">
+            <!-- Header -->
+            <h1 class="text-2xl font-semibold">
+                Account #{{ props.account.id }}
+            </h1>
 
-                <!-- Thumbnail -->
-                <div class="relative">
+            <!-- Main Content -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                <!-- Thumbnail Panel -->
+                <div class="rounded-2xl overflow-hidden border border-sidebar-border/70 dark:border-sidebar-border bg-black/5">
+
                     <template v-if="hasImage">
                         <img
-                        :src="thumbSrc"
-                        :alt="props.account.thumbnail?.filename || 'Thumbnail'"
-                        class="w-full h-64 object-cover"
-                        @error="onError(props.account.thumbnail?.relative_path ?? '')"
+                            :src="thumbSrc"
+                            :alt="props.account.thumbnail?.filename || 'Thumbnail'"
+                            class="w-full h-[480px] object-cover"
+                            @error="onError(props.account.thumbnail?.relative_path ?? '')"
                         />
                     </template>
 
                     <template v-else>
-                        <div class="w-full h-64 flex items-center justify-center bg-gray-200 dark:bg-gray-700">
-                        <PlaceholderPattern />
+                        <div class="relative w-full h-[480px] flex items-center justify-center bg-gray-200 dark:bg-gray-700">
+                            <PlaceholderPattern />
                         </div>
                     </template>
                 </div>
 
-                <!-- Profile -->
-                <div class="p-3 space-y-2 text-sm">
-                    <div class="font-semibold">
-                    {{ account.profile?.name ?? 'No name' }}
-                    <span v-if="account.profile?.name_latin" class="text-gray-500">
-                        ({{ account.profile.name_latin }})
-                    </span>
+                <!-- Right Panel: Profile -->
+                <div class="flex flex-col gap-4">
+
+                    <!-- Basic Identity -->
+                    <div>
+                        <h2 class="text-xl font-semibold">
+                            {{ profile?.name ?? 'Unnamed Profile' }}
+
+                            <span v-if="profile?.name_latin" class="text-gray-500 ml-1">
+                                ({{ profile.name_latin }})
+                            </span>
+                        </h2>
+                    
+                        <div class="text-gray-600 dark:text-gray-400 mt-1 space-x-1">
+                            <span v-if="profile?.age">{{ profile.age }} yrs</span>
+                            <span v-if="profile?.location"> • {{ profile.location }}</span>
+                            <span v-if="profile?.ethnicity"> • {{ profile.ethnicity }}</span>
+                        </div>
                     </div>
 
-                    <div class="text-gray-600 dark:text-gray-400">
-                    <span v-if="account.profile?.age">{{ account.profile.age }} yrs</span>
-                    <span v-if="account.profile?.location"> • {{ account.profile.location }}</span>
-                    <span v-if="account.profile?.ethnicity"> • {{ account.profile.ethnicity }}</span>
+                    <!-- Attributes -->
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                        <div v-if="profile?.height">Height: {{ profile.height }} cm</div>
+                        <div v-if="profile?.weight">Weight: {{ profile.weight }} kg</div>
+                        <div v-if="profile?.measurement_size">Size: {{ profile.measurement_size }}</div>
+                        <div v-if="profile?.position">Position: {{ profile.position }}</div>
+                        <div v-if="profile?.preferences">Preferences: {{ profile.preferences }}</div>
                     </div>
 
-                    <!-- Physical metrics -->
-                    <div class="flex flex-wrap gap-2 text-gray-700 dark:text-gray-300">
-                    <span v-if="account.profile?.height">H: {{ account.profile.height }} cm</span>
-                    <span v-if="account.profile?.weight">W: {{ account.profile.weight }} kg</span>
-                    <span v-if="account.profile?.measurement_size">M: {{ account.profile.measurement_size }}</span>
+                    <!-- Additional Profile Info -->
+                    <div class="mt-4 space-y-2 text-sm text-gray-700 dark:text-gray-300">
+
+                        <div v-if="profile?.legacy_id">
+                            <strong>Legacy ID:</strong> {{ profile.legacy_id }}
+                        </div>
+
+                        <div v-if="profile?.year_of_birth">
+                            <strong>Year of Birth:</strong> {{ profile.year_of_birth }}
+                        </div>
+
+                        <div v-if="profile?.date_of_birth">
+                            <strong>Date of Birth:</strong> {{ profile.date_of_birth }}
+                        </div>
+
+                        <div v-if="profile?.phone_number">
+                            <strong>Phone:</strong> {{ profile.phone_number }}
+                        </div>
+
+                        <div v-if="profile?.social_profiles" class="break-words">
+                            <strong>Social Profiles:</strong> {{ profile.social_profiles }}
+                        </div>
+
+                        <div v-if="profile?.comment" class="whitespace-pre-line">
+                            <strong>Comment:</strong>
+                            <p class="mt-1 text-gray-600 dark:text-gray-400">{{ profile.comment }}</p>
+                        </div>
+
+                        <div v-if="profile?.extra" class="mt-2">
+                            <strong>Extra Data:</strong>
+                            <pre class="overflow-auto max-h-32 bg-gray-100 dark:bg-gray-800 p-2 rounded text-xs">{{ JSON.stringify(profile.extra, null, 2) }}</pre>
+                        </div>
                     </div>
 
-                    <!-- Role / position -->
-                    <div v-if="account.profile?.position">
-                    Position: {{ account.profile.position }}
+                    <!-- Booleans as Chips -->
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        <div
+                            v-for="flag in flags"
+                            :key="flag.key"
+                            >
+                            <span v-if="profile && profile[flag.key as keyof Profile]"
+                            class="px-2 py-1 rounded-lg text-xs bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200"
+                            >
+                            ✔ {{ flag.label }}
+                            </span>
+                        </div>
                     </div>
 
-                    <div v-if="account.profile?.preferences">
-                    Pref: {{ account.profile.preferences }}
-                    </div>
+                    <!-- Category Links -->
+                    <div class="mt-4">
+                        <h3 class="font-semibold mb-2">Media Categories</h3>
 
-                    <!-- Boolean flags -->
-                    <div class="flex flex-wrap gap-1 mt-1">
-                    <span
-                        v-if="account.profile?.has_face_photo"
-                        class="px-2 py-0.5 text-xs rounded bg-green-200 dark:bg-green-700"
-                    >Face</span>
-
-                    <span
-                        v-if="account.profile?.has_body_photo"
-                        class="px-2 py-0.5 text-xs rounded bg-green-200 dark:bg-green-700"
-                    >Body</span>
-
-                    <span
-                        v-if="account.profile?.has_dick_photo"
-                        class="px-2 py-0.5 text-xs rounded bg-green-200 dark:bg-green-700"
-                    >Dick</span>
-
-                    <span
-                        v-if="account.profile?.has_anus_photo"
-                        class="px-2 py-0.5 text-xs rounded bg-green-200 dark:bg-green-700"
-                    >Anus</span>
-
-                    <span
-                        v-if="account.profile?.has_cum_photo"
-                        class="px-2 py-0.5 text-xs rounded bg-green-200 dark:bg-green-700"
-                    >Cum</span>
-
-                    <span
-                        v-if="account.profile?.has_had_sex"
-                        class="px-2 py-0.5 text-xs rounded bg-blue-200 dark:bg-blue-700"
-                    >Sex</span>
-                    </div>
-
-                    <!-- Contact -->
-                    <div v-if="account.profile?.phone_number" class="text-gray-600 dark:text-gray-400">
-                    📞 {{ account.profile.phone_number }}
-                    </div>
-
-                    <div v-if="account.profile?.social_profiles" class="text-gray-600 dark:text-gray-400">
-                    🔗 {{ account.profile.social_profiles }}
-                    </div>
-
-                    <!-- Comment preview -->
-                    <div v-if="account.profile?.comment" class="text-gray-500 line-clamp-2">
-                    {{ account.profile.comment }}
-                    </div>
-
-                    <!-- Extra preview -->
-                    <div v-if="account.profile?.extra" class="text-gray-500 line-clamp-2">
-                    {{ account.profile.extra }}
+                        <div class="flex flex-wrap gap-2">
+                            <Link
+                                v-for="cat in mediaCategories"
+                                :key="cat.key"
+                                :href="cat.route(props.account.id)"
+                                class="px-3 py-2 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border hover:bg-accent/10 transition"
+                            >
+                                {{ cat.label }}
+                            </Link>
+                        </div>
                     </div>
                 </div>
-
-
             </div>
-
-            
         </div>
     </AppLayout>
 </template>
