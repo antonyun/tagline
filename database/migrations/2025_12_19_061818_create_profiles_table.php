@@ -41,7 +41,7 @@ return new class extends Migration
             $table->boolean('has_had_sex')->default(false);
 
             $table->string('phone_number')->nullable();
-            $table->string('social_profiles')->nullable();
+            $table->json('social_profiles')->nullable();
 
             $table->text('comment')->nullable();
 

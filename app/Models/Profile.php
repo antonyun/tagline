@@ -12,7 +12,8 @@ class Profile extends Model
         'has_dick_photo' => 'boolean',
         'has_anus_photo' => 'boolean',
         'has_cum_photo' => 'boolean',
-        'has_had_sex' => 'boolean',       
+        'has_had_sex' => 'boolean',
+        'social_profiles' => 'array',
         'extra' => 'array',
     ];
 
