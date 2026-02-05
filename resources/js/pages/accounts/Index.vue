@@ -88,7 +88,13 @@ function onError(accountId: number, fallbackSrc: string) {
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-        <h1>Accounts</h1>
+            <div class="flex justify-between">
+                <h1>Accounts</h1>
+                <Link
+                    href="/accounts/create"
+                    class="px-3 py-1 rounded bg-indigo-600 text-white"
+                >Create</Link>
+            </div>
 
         <div class="flex flex-wrap justify-start gap-3">
             <Link

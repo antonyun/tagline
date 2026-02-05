@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Account extends Model
 {
-    protected $fillable = ['file_id'];
+    protected $fillable = ['media_id'];
 
     public function profiles()
     {
