@@ -57,6 +57,9 @@ class MediaController extends Controller
                 'sha256' => hash_file('sha256', $file),
             ]);
 
+            $media->accounts()->attach($request->account_id);
+            $media->categories()->attach($request->category_id);
+
             $uploadedMedia[] = $media;
         }
 

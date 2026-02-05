@@ -27,12 +27,19 @@ const props = usePage().props;
 }) */
 
 const files = ref<File[]>([])
-const form = useForm({
-  files: null
-})
 const uploaded = ref<any[]>([])
 const loading = ref(false)
 const error = ref('')
+
+const form = useForm<{
+  files: File[] | null
+  account_id: number | null
+  category_id: number | null
+}>({
+  files: null,
+  account_id: null,
+  category_id: null,
+})
 
 function handleFiles(event: Event) {
   const target = event.target as HTMLInputElement
@@ -42,21 +49,28 @@ function handleFiles(event: Event) {
 }
 
 function uploadFiles() {
-    loading.value = true
-    form.files = files.value
-    form.post('/media', {
-      forceFormData: true,
+  loading.value = true
 
-      onSuccess: (res) => {
-        console.log('res:', res)
-        console.log('usePage props:', usePage().props.value)
-        console.log('Success:', props.flash)
-        console.log('Success message:', props.flash?.message)
-        console.log('Returned data:', props.flash?.data)
-      },
+  form.files = files.value
 
-      onFinish: () => loading.value = false,
-    })
+  form.post('/media', {
+    forceFormData: true,
+
+    onSuccess: (res) => {
+      console.log('res:', res)
+      console.log('usePage props:', usePage().props.value)
+      console.log('Success:', props.flash)
+      console.log('Success message:', props.flash?.message)
+      console.log('Returned data:', props.flash?.data)
+    },
+
+    onError: (errors) => {
+      error.value = 'Upload failed'
+      console.error(errors)
+    },
+
+    onFinish: () => loading.value = false,
+  })
 }
 
 </script>
@@ -72,6 +86,20 @@ function uploadFiles() {
       <h1>Mass Upload Files</h1>
 
       <input type="file" multiple @change="handleFiles" />
+
+      <input
+        type="number"
+        v-model.number="form.account_id"
+        placeholder="account_id"
+        class="border rounded p-2"
+      />
+
+      <input
+        type="number"
+        v-model.number="form.category_id"
+        placeholder="category_id"
+        class="border rounded p-2"
+      />
 
       <button @click="uploadFiles" :disabled="files.length === 0 || loading">
         Upload
