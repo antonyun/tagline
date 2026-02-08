@@ -1,0 +1,27 @@
+export type FieldType = 'text' | 'number' | 'date' | 'checkbox'
+
+export const defaultFields: Record<string, FieldType> = {
+    legacy_id: 'number',
+    name: 'text',
+    name_latin: 'text',
+    ethnicity: 'text',
+    location: 'text',
+    age: 'number',
+    year_of_birth: 'number',
+    date_of_birth: 'date',
+    height: 'number',
+    weight: 'number',
+    measurement_size: 'number',
+    position: 'text',
+    preferences: 'text',
+    has_face_photo: 'checkbox',
+    has_body_photo: 'checkbox',
+    has_dick_photo: 'checkbox',
+    has_anus_photo: 'checkbox',
+    has_cum_photo: 'checkbox',
+    has_had_sex: 'checkbox',
+    phone_number: 'text',
+    social_profiles: 'text',
+    comment: 'text',
+    extra: 'text',
+} as const

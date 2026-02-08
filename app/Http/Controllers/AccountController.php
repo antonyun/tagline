@@ -57,7 +57,7 @@ class AccountController extends Controller
             'phone_number' => 'nullable|string|max:20',
             'social_profiles' => 'nullable|json',
             'comment' => 'nullable|string',
-            'extra' => 'nullable|string',
+            'extra' => 'nullable|json',
         ]);
 
         $account = Account::create();
@@ -65,6 +65,11 @@ class AccountController extends Controller
         // Optional: decode social_profiles JSON into array/object before storing
         if (isset($validated['social_profiles'])) {
             $validated['social_profiles'] = json_decode($validated['social_profiles'], true);
+        }
+
+        // Optional: decode extra JSON into array/object before storing
+        if (isset($validated['extra'])) {
+            $validated['extra'] = json_decode($validated['extra'], true);
         }
 
         // Create Profile linked to Account
@@ -95,7 +100,11 @@ class AccountController extends Controller
      */
     public function edit(Account $account)
     {
-        //
+        $account->load('profile');
+
+        return Inertia::render('accounts/Edit', [
+            'account' => $account,
+        ]);
     }
 
     /**
@@ -103,7 +112,52 @@ class AccountController extends Controller
      */
     public function update(Request $request, Account $account)
     {
-        //
+        $validated = $request->validate([
+            'legacy_id' => 'nullable|integer',
+            'name' => 'nullable|string|max:255',
+            'name_latin' => 'nullable|string|max:255',
+            'ethnicity' => 'nullable|string|max:255',
+            'location' => 'nullable|string|max:255',
+            'age' => 'nullable|integer|min:0',
+            'year_of_birth' => 'nullable|integer|min:1900|max:' . date('Y'),
+            'date_of_birth' => 'nullable|date',
+            'height' => 'nullable|numeric|min:0',
+            'weight' => 'nullable|numeric|min:0',
+            'measurement_size' => 'nullable|numeric|min:0',
+            'position' => 'nullable|string|max:255',
+            'preferences' => 'nullable|string',
+            'has_face_photo' => 'boolean',
+            'has_body_photo' => 'boolean',
+            'has_dick_photo' => 'boolean',
+            'has_anus_photo' => 'boolean',
+            'has_cum_photo' => 'boolean',
+            'has_had_sex' => 'boolean',
+            'phone_number' => 'nullable|string|max:20',
+            'social_profiles' => 'nullable|json',
+            'comment' => 'nullable|string',
+            'extra' => 'nullable|json',
+        ]);
+
+
+        // Optional: decode social_profiles JSON into array/object before storing
+        if (isset($validated['social_profiles'])) {
+            $validated['social_profiles'] = json_decode($validated['social_profiles'], true);
+        }
+
+        // Optional: decode extra JSON into array/object before storing
+        if (isset($validated['extra'])) {
+            $validated['extra'] = json_decode($validated['extra'], true);
+        }
+
+        // Create Profile linked to Account
+        $profile = Profile::create(array_merge(
+            $validated,
+            ['account_id' => $account->id]
+        ));
+
+        return redirect()
+            ->route('accounts.show', $account->id)
+            ->with('success', 'Account updated successfully.');
     }
 
     /**

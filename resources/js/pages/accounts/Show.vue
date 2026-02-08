@@ -2,6 +2,7 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { index as accountsIndex } from '@/routes/accounts';
+import { edit as accountsEdit } from '@/routes/accounts';
 import { type BreadcrumbItem } from '@/types';
 import { ref, computed } from 'vue'
 import { Head, Link } from '@inertiajs/vue3';
@@ -123,9 +124,15 @@ const mediaCategories = [
         <div class="flex flex-col gap-6 p-6">
 
             <!-- Header -->
-            <h1 class="text-2xl font-semibold">
-                Account #{{ props.account.id }}
-            </h1>
+            <div class="flex place-content-between">
+                <h1 class="text-2xl font-semibold">
+                    Account #{{ props.account.id }}
+                </h1>
+                <Link
+                    :href="accountsEdit(account.id)"
+                    class="px-3 py-2 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border hover:bg-accent/10 transition"
+                >Edit</Link>
+            </div>
 
             <!-- Main Content -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">

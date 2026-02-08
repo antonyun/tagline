@@ -7,6 +7,16 @@ import { Head, useForm } from '@inertiajs/vue3';
 
 import { defaultFields } from '@/config/accountFields'
 
+const props = defineProps<{
+    account: {
+        id: number
+        profile: Record<string, any> | null
+    }
+}>();
+
+const account = props.account
+const profile = account.profile ?? {}
+
 // build initial form state automatically
 const initialData = Object.fromEntries(
   Object.entries(defaultFields).map(([key, type]) => [
@@ -15,7 +25,21 @@ const initialData = Object.fromEntries(
   ])
 )
 
-const form = useForm<Record<string, any>>(initialData)
+const form = useForm<Record<string, any>>({
+  ...initialData,
+
+  ...profile,
+
+  // ensure JSON fields are strings for inputs
+  social_profiles: profile.social_profiles
+    ? JSON.stringify(profile.social_profiles, null, 2)
+    : null,
+
+  // ensure JSON fields are strings for inputs
+  extra: profile.extra
+    ? JSON.stringify(profile.extra, null, 2)
+    : null,
+})
 
 function tryParseJson(value: unknown) {
   if (typeof value !== 'string') return value
@@ -35,7 +59,7 @@ const submit = () => {
         form.extra = tryParseJson(form.extra)
     } */
     
-    form.post('/accounts'), {
+    form.patch(`/accounts/${account.id}`), {
         preserveScroll: true,
         onSuccess: () => form.reset(),
     }
@@ -52,7 +76,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: accountsIndex().url,
     },
     {
-        title: 'Create',
+        title: 'Edit',
         href: accountsIndex().url,
     },
 ];
@@ -60,14 +84,14 @@ const breadcrumbs: BreadcrumbItem[] = [
 </script>
 
 <template>
-    <Head title="Create Account" />
+    <Head title="Edit Account" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-col gap-6 p-6">
 
             <!-- Header -->
             <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-                Create Account
+                Edit Account
             </h1>
 
             <!-- Form Container -->
