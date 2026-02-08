@@ -27,6 +27,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/accounts/{account}/media', [AccountMediaController::class, 'index'])->name('accounts.media.index');
     Route::resource('accounts', AccountController::class);
+    Route::get('accounts/{account}/avatar', [AccountController::class, 'avatar']);
+    Route::patch('accounts/{account}/avatar', [AccountController::class, 'avatarUpdate']);
+    Route::put('accounts/{account}/avatar', [AccountController::class, 'avatarUpdate']);
     Route::resource('media', MediaController::class);
     
     //Route::resource('files', FileController::class);

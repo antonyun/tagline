@@ -167,4 +167,18 @@ class AccountController extends Controller
     {
         //
     }
+
+    public function avatar(Account $account)
+    {
+        return Inertia::render('accounts/Avatar', [
+            'account' => $account,
+            'images' => $account->media()->where('mime_type', 'like', 'image/%')->get(),
+        ]);
+    }
+
+    public function avatarUpdate(Request $request, Account $account)
+    {
+        $account->update($request->all());
+        return redirect()->route('accounts.show', $account->id);
+    }
 }

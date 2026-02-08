@@ -8,58 +8,9 @@ import { ref, computed } from 'vue'
 import { Head, Link } from '@inertiajs/vue3';
 import PlaceholderPattern from '../../components/PlaceholderPattern.vue';
 
-interface Media {
-  id: number;
-  filename: string;
-  original_name: string | null;
-  mime_type: string | null;
-  size: number | null;
-  md5: string | null;
-  sha256: string | null;
-  thumbnail: string | null;
-  relative_path: string | null;
-  relative_thumbnail_path: string | null;
-}
-
-interface Profile {
-  id: number;
-  legacy_id: number | null;
-
-  name: string | null;
-  name_latin: string | null;
-  ethnicity: string | null;
-  location: string | null;
-
-  age: number | null;
-  year_of_birth: number | null;
-  date_of_birth: string | null;
-
-  height: number | null;
-  weight: number | null;
-  measurement_size: number | null;
-
-  position: string | null;
-  preferences: string | null;
-
-  has_face_photo: boolean;
-  has_body_photo: boolean;
-  has_dick_photo: boolean;
-  has_anus_photo: boolean;
-  has_cum_photo: boolean;
-  has_had_sex: boolean;
-
-  phone_number: string | null;
-  social_profiles: string | null;
-
-  comment: string | null;
-  extra: Record<string, unknown> | null;
-}
-
-interface Account {
-    id: number;
-    thumbnail: Media | null;
-    profile: Profile | null;
-}
+import { Account } from '@/types/models/Account'
+import { Media } from '@/types/models/Media'
+import { Profile } from '@/types/models/Profile'
 
 const props = defineProps<{account: Account;}>();
 
@@ -140,20 +91,22 @@ const mediaCategories = [
                 <!-- Thumbnail Panel -->
                 <div class="rounded-2xl overflow-hidden border border-sidebar-border/70 dark:border-sidebar-border bg-black/5">
 
-                    <template v-if="hasImage">
-                        <img
-                            :src="thumbSrc"
-                            :alt="props.account.thumbnail?.filename || 'Thumbnail'"
-                            class="w-full h-[480px] object-cover"
-                            @error="onError(props.account.thumbnail?.relative_path ?? '')"
-                        />
-                    </template>
+                    <Link :href="`/accounts/${account.id}/avatar`">
+                        <template v-if="hasImage">
+                            <img
+                                :src="thumbSrc"
+                                :alt="props.account.thumbnail?.filename || 'Thumbnail'"
+                                class="w-full h-[480px] object-cover"
+                                @error="onError(props.account.thumbnail?.relative_path ?? '')"
+                            />
+                        </template>
 
-                    <template v-else>
-                        <div class="relative w-full h-[480px] flex items-center justify-center bg-gray-200 dark:bg-gray-700">
-                            <PlaceholderPattern />
-                        </div>
-                    </template>
+                        <template v-else>
+                            <div class="relative w-full h-[480px] flex items-center justify-center bg-gray-200 dark:bg-gray-700">
+                                <PlaceholderPattern />
+                            </div>
+                        </template>
+                    </Link>
                 </div>
 
                 <!-- Right Panel: Profile -->
