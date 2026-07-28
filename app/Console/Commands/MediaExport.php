@@ -29,7 +29,7 @@ class MediaExport extends Command
      */
     public function handle()
     {
-        $accountId = $this->parameter('account-id');
+        $accountId = $this->argument('account-id');
 
         $account = Account::with('media')->find($accountId);
 
