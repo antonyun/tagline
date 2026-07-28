@@ -97,12 +97,15 @@ function onError(mediaId: number, fallbackSrc: string) {
             class="relative overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border cursor-pointer">
             <template v-if="mediaSrcs[media.id]">
                 <a target="_blank" :href="media.relative_path ?? '#'">
-                  <img
+                  <img v-if="media.mime_type?.slice(0,6) == 'image/'"
                   :src="mediaSrcs[media.id]"
                   :alt="media.filename || 'Image'"
                   class="h-46 w-auto object-cover rounded-xl"
                   @error="onError(media.id, media.relative_path ?? '')"
                   />
+                  <video v-else class="h-46 w-auto" controls>
+                    <source :src="media.relative_path ?? ''" :type="media.mime_type ?? ''">
+                  </video>
                 </a>
             </template>
             <template v-else>

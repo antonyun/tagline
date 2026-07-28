@@ -61,7 +61,10 @@ class AccountMediaController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        // TODO create logic to move media to another account
+        // there is dirty account with media from different people:
+        // 1625 1628 1638 1643 1643 1647
+
     }
 
     /**
