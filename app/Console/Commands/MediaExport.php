@@ -6,6 +6,7 @@ use App\Models\Account;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class MediaExport extends Command
 {
