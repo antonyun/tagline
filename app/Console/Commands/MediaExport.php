@@ -24,6 +24,35 @@ class MediaExport extends Command
      */
     protected $description = 'Export media for specified account ID';
 
+    private function uniqueFilename(string $directory, string $filename): string
+    {
+        $target = $directory . DIRECTORY_SEPARATOR . $filename;
+
+        if (! File::exists($target)) {
+            return $target;
+        }
+
+        $info = pathinfo($filename);
+
+        $name = $info['filename'];
+        $extension = isset($info['extension'])
+            ? '.' . $info['extension']
+            : '';
+
+        do {
+            $newFilename = sprintf(
+                '%s-%s%s',
+                $name,
+                Str::lower(Str::random(8)),
+                $extension
+            );
+
+            $target = $directory . DIRECTORY_SEPARATOR . $newFilename;
+        } while (File::exists($target));
+
+        return $target;
+    }
+
     /**
      * Execute the console command.
      */
@@ -57,9 +86,11 @@ class MediaExport extends Command
         $copied = 0;
         $skipped = 0;
 
+        $exportDir = Storage::disk('local')->path('exports');
+
         foreach ($mediaList as $media) {
             $source = Storage::disk('public')->path('media/' . $media->filename);
-            $target = Storage::disk('local')->path('exports/' . $media->original_name);
+            $target = $this->uniqueFilename($exportDir, $media->original_name);
             
             if (File::exists($source)) {
                 File::copy($source, $target);
